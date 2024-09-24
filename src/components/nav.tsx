@@ -3,11 +3,16 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaHome, FaInfoCircle, FaCalendarCheck, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
+import { FaHome, FaInfoCircle, FaCalendarCheck, FaCalendarAlt, FaEnvelope, FaChalkboardTeacher, FaUserCog } from "react-icons/fa";
+import { auth, db } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [specialRole, setSpecialRole] = useState<string | null>(null);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -19,7 +24,31 @@ const Navbar = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Check user role from the 'teacher' collection
+        const userDocRef = doc(db, 'teachers', user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setUserRole(userData.role || null);
+          setSpecialRole(userData.specialRole || null);
+        } else {
+          setUserRole(null);
+          setSpecialRole(null);
+        }
+      } else {
+        setUserRole(null);
+        setSpecialRole(null);
+      }
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      unsubscribe();
+    };
   }, []);
 
   const navItems = [
@@ -29,6 +58,14 @@ const Navbar = () => {
     { href: "/events", label: "Events", icon: FaCalendarAlt },
     { href: "/contact", label: "Contact", icon: FaEnvelope },
   ];
+
+  if (userRole === 'teacher') {
+    navItems.push({ href: "/teacher", label: "Teacher Dashboard", icon: FaChalkboardTeacher });
+  }
+
+  if (specialRole === 'admin') {
+    navItems.push({ href: "/admin", label: "Admin Dashboard", icon: FaUserCog });
+  }
 
   return (
     <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? "bg-blue-800 shadow-lg" : "bg-blue-800"}`}>

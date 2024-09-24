@@ -23,7 +23,7 @@ export default function AboutUs() {
               <Image src="https://www.codingdojo.com/blog/wp-content/uploads/Can-Anyone-Really-Learn-How-to-Code_cover-01.jpg" alt="ByteBuilders Club members" width={500} height={300} className="rounded-lg shadow-md" />
             </div>
             <div className="md:w-1/2">
-              <p className="mb-4 text-lg">ByteBuilders Club is a vibrant community of passionate coders and technology enthusiasts. Founded in 2020, we've grown into a diverse group with members from various backgrounds and skill levels.</p>
+              <p className="mb-4 text-lg">ByteBuilders Club is a vibrant community of passionate coders and technology enthusiasts. Founded in 2020, we&apos;ve grown into a diverse group with members from various backgrounds and skill levels.</p>
               <p className="mb-4 text-lg">Our mission is to empower students with the skills and knowledge they need to excel in the ever-evolving field of technology.</p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function AboutUs() {
               ))}
             </div>
           </div>
-          <p className="mb-6 text-lg text-center">Whether you're a beginner or an experienced coder, ByteBuilders Club has something for everyone. Join us to explore the exciting world of programming, develop your problem-solving skills, and connect with like-minded individuals who share your passion for technology.</p>
+          <p className="mb-6 text-lg text-center">Whether you&apos;re a beginner or an experienced coder, ByteBuilders Club has something for everyone. Join us to explore the exciting world of programming, develop your problem-solving skills, and connect with like-minded individuals who share your passion for technology.</p>
           <div className="text-center mt-8">
             <Link href="/events" legacyBehavior>
               <a className="inline-block bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">

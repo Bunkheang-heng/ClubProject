@@ -1,15 +1,18 @@
 'use client'
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Nav from '../../components/nav';
 import Footer from '../../components/footer';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +22,20 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      setSuccess('Login successful!');
+
+      // Check if the user is a teacher
+      const userDocRef = doc(db, 'teachers', user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (userDocSnap.exists()) {
+        setSuccess('Login successful!');
+        // Redirect to teacher page
+        router.push('/teacher');
+      } else {
+        setError('Access denied. You are not registered as a teacher.');
+        // Sign out the user if they're not a teacher
+        await auth.signOut();
+      }
     } catch (error) {
       setError((error as Error).message);
     }

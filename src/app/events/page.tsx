@@ -7,8 +7,9 @@ import { motion } from 'framer-motion';
 import { FaCalendar, FaClock, FaMapMarkerAlt } from 'react-icons/fa';
 import { db } from '../../firebase'; // Ensure your Firebase setup is here
 import { collection, getDocs } from 'firebase/firestore';
+import Image from 'next/image';
 
-// Define the type for an event
+
 interface Event {
   title: string;
   image: string; 
@@ -66,7 +67,7 @@ export default function Events() {
               whileHover={{ y: -5 }}
               onClick={() => handleEventClick(event)}
             >
-              <img src={event.image} alt={event.title} className="w-full h-48 object-cover" />
+              <Image src={event.image} alt={event.title} width={400} height={200} className="w-full h-48 object-cover" />
               <div className="p-6">
                 <h2 className="text-xl font-semibold mb-2 text-indigo-700">{event.title}</h2>
                 <p className="text-gray-600 mb-4">{event.description}</p>
@@ -99,7 +100,7 @@ export default function Events() {
             className="bg-white rounded-lg p-8 max-w-2xl w-full"
           >
             <h2 className="text-3xl font-bold mb-4 text-indigo-800">{selectedEvent.title}</h2>
-            <img src={selectedEvent.image} alt={selectedEvent.title} className="w-full h-64 object-cover rounded-lg mb-4" />
+            <Image src={selectedEvent.image} alt={selectedEvent.title} width={800} height={400} className="w-full h-64 object-cover rounded-lg mb-4" />
             <p className="text-gray-700 mb-4">{selectedEvent.description}</p>
             <div className="flex items-center text-gray-600 mb-2">
               <FaCalendar className="mr-2" />

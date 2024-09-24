@@ -4,24 +4,32 @@ import Nav from '../../components/nav';
 import Footer from '../../components/footer';
 import { motion } from 'framer-motion';
 import { db } from '../../firebase';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, } from 'firebase/firestore';
 
 // Define the type for courses
-type Course = { id: string; [key: string]: any }; // Adjust as necessary for other properties
+type Course = {
+  id: string;
+  title: string;
+  // Add other course properties as needed
+};
 
 export default function Attendance() {
   const [name, setName] = useState('');
   const [studentId, setStudentId] = useState('');
   const [studentClass, setStudentClass] = useState('');
   const [attendance] = useState('present'); // Default value is 'present'
-  const [courses, setCourses] = useState<Course[]>([]); // Specify the type here
+  const [courses, setCourses] = useState<Course[]>([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const fetchCourses = async () => {
       const coursesSnapshot = await getDocs(collection(db, 'courses'));
-      const coursesList = coursesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const coursesList: Course[] = coursesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        title: doc.data().title as string,
+        // Map other course properties as needed
+      }));
       setCourses(coursesList);
     };
 
