@@ -2,15 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+  :root {
+    --color-primary: #8B0000; /* Dark red/maroon from logo */
+    --color-primary-light: #B22222; /* Slightly lighter maroon */
+    --color-primary-dark: #5F0000; /* Darker maroon */
+    --color-secondary: #1F1F1F; /* Black from logo text */
+    --color-accent: #9D2235; /* Complementary accent color */
+    --color-gray-light: #F8F8F8;
+    --color-gray: #E5E5E5;
+  }
+}
+
+/* Additional custom styles */
+.text-gradient {
+  @apply bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary 
+    text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition-all duration-300
+    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden;
+}
+
+.input-field {
+  @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm 
+    focus:outline-none focus:ring-primary focus:border-primary;
+}
+
+.admin-heading {
+  @apply text-2xl font-bold mb-6 text-primary;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #1A1A1A;
+    --foreground: #F5F5F5;
+    --primary: #A02020;
+    --primary-dark: #8B0000;
+    --primary-light: #D32F2F;
+    --secondary: #F5F5F5;
+    --accent: #FF5252;
+    --gray-light: #333333;
+    --gray: #444444;
   }
 }
 
@@ -18,6 +56,23 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom Toast Styles */
+.Toastify__toast-container {
+  font-family: 'Inter', sans-serif;
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(to right, var(--primary), var(--accent));
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(to right, #dc2626, var(--accent));
+}
+
+.Toastify__toast-body {
+  font-weight: 500;
 }
 
 @layer utilities {

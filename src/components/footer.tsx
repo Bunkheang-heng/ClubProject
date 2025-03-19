@@ -22,7 +22,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white py-12">
+    <footer className="bg-secondary text-white py-12">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <motion.div
@@ -32,12 +32,12 @@ export default function Footer() {
             className="text-center md:text-left"
           >
             <h2 className="text-3xl font-bold mb-4 flex items-center justify-center md:justify-start">
-              <FaCode className="mr-2" /> ByteBuilders Club
+              <FaCode className="mr-2 text-primary-light" /> ByteBuilders Club
             </h2>
             <p className="text-gray-300 mb-4">Empowering students with cutting-edge coding skills and knowledge.</p>
             <div className="flex items-center justify-center md:justify-start space-x-2">
-              <FaLaptopCode className="text-blue-400" />
-              <FaRocket className="text-purple-400" />
+              <FaLaptopCode className="text-primary-light" />
+              <FaRocket className="text-accent" />
             </div>
           </motion.div>
           
@@ -52,7 +52,7 @@ export default function Footer() {
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link href={link.href} legacyBehavior>
-                    <a className="hover:text-blue-400 transition-colors duration-300 flex items-center justify-center">
+                    <a className="hover:text-primary-light transition-colors duration-300 flex items-center justify-center">
                       <span className="mr-2">•</span> {link.label}
                     </a>
                   </Link>
@@ -75,7 +75,7 @@ export default function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-blue-400 transition-colors duration-300 text-2xl"
+                  className="hover:text-primary-light transition-colors duration-300 text-2xl"
                   whileHover={{ scale: 1.2 }}
                   aria-label={social.label}
                 >

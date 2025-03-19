@@ -4,7 +4,9 @@ import Nav from '../../components/nav';
 import Footer from '../../components/footer';
 import { motion } from 'framer-motion';
 import { db } from '../../firebase';
-import { collection, getDocs, addDoc, } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Define the type for courses
 type Course = {
@@ -19,8 +21,10 @@ export default function Attendance() {
   const [studentClass, setStudentClass] = useState('');
   const [attendance] = useState('present'); // Default value is 'present'
   const [courses, setCourses] = useState<Course[]>([]);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  
+  // Use toast instead of state messages
+  const showSuccess = (message: string) => toast.success(message);
+  const showError = (message: string) => toast.error(message);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -38,8 +42,6 @@ export default function Attendance() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
 
     try {
       await addDoc(collection(db, 'attendance'), {
@@ -49,17 +51,17 @@ export default function Attendance() {
         attendance,
         timestamp: new Date()
       });
-      setSuccess('Attendance recorded successfully!');
+      showSuccess('Attendance recorded successfully!');
       setName('');
       setStudentId('');
       setStudentClass('');
     } catch (error) {
-      setError((error as Error).message);
+      showError((error as Error).message);
     }
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-gray-900 min-h-screen flex flex-col mt">
+    <div className="bg-gradient-to-r from-gray-50 to-gray-100 text-gray-900 min-h-screen flex flex-col mt">
       <Nav />
       <div className="container mx-auto p-6 flex-grow mt-20">
         <motion.div 
@@ -68,9 +70,7 @@ export default function Attendance() {
           transition={{ duration: 0.5 }} 
           className="bg-white shadow-lg rounded-xl p-10"
         >
-          <h1 className="text-5xl font-extrabold mb-8 text-center text-blue-800">Attendance Form</h1>
-          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-          {success && <p className="text-green-500 text-center mb-4">{success}</p>}
+          <h1 className="text-5xl font-extrabold mb-8 text-center text-primary">Attendance Form</h1>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
@@ -79,7 +79,7 @@ export default function Attendance() {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 required
               />
             </div>
@@ -90,7 +90,7 @@ export default function Attendance() {
                 id="studentId"
                 value={studentId}
                 onChange={(e) => setStudentId(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 required
               />
             </div>
@@ -100,7 +100,7 @@ export default function Attendance() {
                 id="studentClass"
                 value={studentClass}
                 onChange={(e) => setStudentClass(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                 required
               >
                 <option value="">Select a class</option>
@@ -114,7 +114,7 @@ export default function Attendance() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                className="inline-block bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition-transform duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
               >
                 Submit
               </motion.button>
@@ -123,6 +123,18 @@ export default function Attendance() {
         </motion.div>
       </div>
       <Footer />
+      <ToastContainer 
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

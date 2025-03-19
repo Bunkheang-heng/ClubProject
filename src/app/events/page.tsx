@@ -55,10 +55,10 @@ export default function Events() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen flex flex-col">
+    <div className="bg-gradient-to-r from-gray-50 to-gray-100 min-h-screen flex flex-col">
       <Nav />
       <main className="flex-grow container mx-auto px-4 py-8 mt-20">
-        <h1 className="text-4xl font-bold text-center mb-8 text-indigo-800">Upcoming Events</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-primary">Upcoming Events</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {events.map((event) => (
             <motion.div
@@ -69,7 +69,7 @@ export default function Events() {
             >
               <Image src={event.image} alt={event.title} width={400} height={200} className="w-full h-48 object-cover" />
               <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2 text-indigo-700">{event.title}</h2>
+                <h2 className="text-xl font-semibold mb-2 text-primary">{event.title}</h2>
                 <p className="text-gray-600 mb-4">{event.description}</p>
                 <div className="flex items-center text-sm text-gray-500">
                   <FaCalendar className="mr-2" />
@@ -99,7 +99,7 @@ export default function Events() {
             exit={{ opacity: 0, scale: 0.9 }}
             className="bg-white rounded-lg p-8 max-w-2xl w-full"
           >
-            <h2 className="text-3xl font-bold mb-4 text-indigo-800">{selectedEvent.title}</h2>
+            <h2 className="text-3xl font-bold mb-4 text-primary">{selectedEvent.title}</h2>
             <Image src={selectedEvent.image} alt={selectedEvent.title} width={800} height={400} className="w-full h-64 object-cover rounded-lg mb-4" />
             <p className="text-gray-700 mb-4">{selectedEvent.description}</p>
             <div className="flex items-center text-gray-600 mb-2">
@@ -116,7 +116,7 @@ export default function Events() {
             </div>
             <button
               onClick={closeModal}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300"
+              className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark transition duration-300"
             >
               Close
             </button>
