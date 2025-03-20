@@ -35,7 +35,7 @@ export default function AboutUs() {
               />
             </div>
             <h2 className="text-3xl font-bold mb-4 text-primary">American University of Phnom Penh</h2>
-            <p className="text-xl text-red-600 italic mb-6">"Study Locally. Live Globally."</p>
+            <p className="text-xl text-red-600 italic mb-6">&quot;Study Locally. Live Globally.&quot;</p>
             <div className="max-w-3xl mx-auto">
               <p className="mb-4 text-lg">
                 American University of Phnom Penh (AUPP) is a premier higher education institution in Cambodia, 
@@ -46,7 +46,7 @@ export default function AboutUs() {
               <p className="text-lg">
                 With state-of-the-art facilities and a diverse faculty of international and local experts, 
                 AUPP creates an engaging learning environment where students develop critical thinking skills
-                and global perspectives essential for success in today's interconnected world.
+                and global perspectives essential for success in today&apos;s interconnected world.
               </p>
             </div>
           </motion.div>
@@ -75,7 +75,7 @@ export default function AboutUs() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <p className="mb-4 text-lg">ByteBuilders Club is a vibrant community of passionate coders and technology enthusiasts at American University of Phnom Penh. Founded in 2023, we&apos;ve grown into a diverse group with members from various backgrounds and skill levels.</p>
-                <p className="mb-4 text-lg">Our mission is to empower AUPP students with the skills and knowledge they need to excel in the ever-evolving field of technology, complementing the university's commitment to academic excellence.</p>
+                <p className="mb-4 text-lg">Our mission is to empower AUPP students with the skills and knowledge they need to excel in the ever-evolving field of technology, complementing the university&apos;s commitment to academic excellence.</p>
               </motion.div>
             </div>
           </div>
@@ -88,13 +88,13 @@ export default function AboutUs() {
           >
             <h2 className="text-2xl font-bold mb-4 text-primary">ByteBuilders at AUPP</h2>
             <p className="mb-4 text-lg">
-              As one of AUPP's most active student organizations, ByteBuilders Club enhances the university's 
+              As one of AUPP&apos;s most active student organizations, ByteBuilders Club enhances the university&apos;s 
               technology education by providing practical, hands-on learning experiences. We collaborate closely 
-              with AUPP's Faculty of Information Technology to organize events, workshops, and projects that 
+              with AUPP&apos;s Faculty of Information Technology to organize events, workshops, and projects that 
               complement classroom learning.
             </p>
             <p className="text-lg">
-              Through our activities, members gain valuable real-world experience while supporting AUPP's mission 
+              Through our activities, members gain valuable real-world experience while supporting AUPP&apos;s mission 
               to develop well-rounded graduates prepared for global careers in technology and innovation.
             </p>
           </motion.div>

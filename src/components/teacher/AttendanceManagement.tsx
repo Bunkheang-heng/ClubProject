@@ -3,6 +3,7 @@ import { FaUserGraduate, FaFileExcel, FaTrash, FaFilter, FaCalendarAlt, FaList, 
 import { motion } from 'framer-motion';
 import { AttendanceRecord } from '@/types/teacher';
 import * as XLSX from 'xlsx';
+import { toast } from 'react-toastify';
 
 interface AttendanceManagementProps {
   attendanceRecords: AttendanceRecord[];
@@ -74,15 +75,11 @@ const AttendanceManagement: React.FC<AttendanceManagementProps> = ({
       // Export file
       XLSX.writeFile(workbook, filename);
       
-      // Show success notification (if available)
-      if (window.toast) {
-        window.toast.success("Attendance records exported successfully");
-      }
+      // Show success notification
+      toast.success("Attendance records exported successfully");
     } catch (error) {
-      console.error("Error exporting attendance data:", error);
-      if (window.toast) {
-        window.toast.error("Failed to export attendance records");
-      }
+      console.error("Error exporting to Excel:", error);
+      toast.error("Failed to export data");
     }
   };
 
