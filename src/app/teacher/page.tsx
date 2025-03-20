@@ -14,6 +14,7 @@ import Footer from '@/components/footer';
 import Spinner from '@/components/ui/Spinner';
 import { Teacher, Course, AttendanceRecord } from '@/types/teacher';
 import { db, auth } from '@/firebase';
+import AttendanceControl from '@/components/teacher/AttendanceControl';
 
 // Separate components for better code organization and rendering performance
 const TeacherProfile = memo(({ teacher }: { teacher: Teacher }) => (
@@ -131,7 +132,8 @@ const AttendanceManagement = memo(({
       
       // Format data for Excel
       const formattedRecords = recordsToExport.map(record => {
-        return {
+        // Use Record<string, string> to allow dynamic property names
+        const data: Record<string, string> = {
           'Student Name': record.name,
           'Student ID': record.studentId,
           'Status': record.attendance,
@@ -139,6 +141,13 @@ const AttendanceManagement = memo(({
           'Date': record.timestamp.toLocaleDateString(),
           'Time': record.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
         };
+        
+        // Add reason field if it's a permission status
+        if (record.attendance === 'permission' && record.reason) {
+          data['Reason'] = record.reason;
+        }
+        
+        return data;
       });
       
       // Create worksheet with formatting
@@ -152,6 +161,7 @@ const AttendanceManagement = memo(({
         { wch: 25 }, // Course
         { wch: 15 }, // Date
         { wch: 10 }, // Time
+        { wch: 40 }  // Reason (if applicable)
       ];
       worksheet['!cols'] = columnWidths;
       
@@ -251,8 +261,16 @@ const AttendanceManagement = memo(({
                           Student Name
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Student ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Status
                         </th>
+                        {records.some(record => record.attendance === 'permission') && (
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Reason
+                          </th>
+                        )}
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -262,16 +280,30 @@ const AttendanceManagement = memo(({
                             <div className="text-sm font-medium text-gray-900">{record.name}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-500">{record.studentId}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 text-xs rounded-full ${
                               record.attendance === 'present' 
                                 ? 'bg-green-100 text-green-800' 
                                 : record.attendance === 'absent'
                                   ? 'bg-red-100 text-red-800'
-                                  : 'bg-yellow-100 text-yellow-800'
+                                  : record.attendance === 'permission'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-blue-100 text-blue-800'
                             }`}>
                               {record.attendance}
                             </span>
                           </td>
+                          {records.some(record => record.attendance === 'permission') && (
+                            <td className="px-6 py-4 whitespace-normal">
+                              {record.attendance === 'permission' && record.reason ? (
+                                <div className="text-sm text-gray-500 max-w-xs">{record.reason}</div>
+                              ) : (
+                                <div className="text-sm text-gray-300">-</div>
+                              )}
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -350,6 +382,7 @@ const TeacherPage = () => {
               name: doc.data().name,
               studentClass: doc.data().studentClass,
               attendance: doc.data().attendance,
+              reason: doc.data().reason,
               timestamp: doc.data().timestamp.toDate()
             }));
             
@@ -477,6 +510,12 @@ const TeacherPage = () => {
             <TeacherProfile teacher={teacher} />
             
             <CoursesList courses={courses} />
+            
+            <AttendanceControl 
+              teacherId={teacher.id}
+              courses={courses}
+              classNames={classNames}
+            />
             
             <AttendanceManagement 
               attendanceRecords={attendanceRecords}

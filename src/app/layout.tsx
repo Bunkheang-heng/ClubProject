@@ -13,9 +13,13 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+
 export const metadata: Metadata = {
   title: "ByteBuilders",
   description: "ByteBuilders Club",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({

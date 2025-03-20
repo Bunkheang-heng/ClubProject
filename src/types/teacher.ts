@@ -26,5 +26,6 @@ export interface AttendanceRecord {
   name: string;
   studentClass: string;
   attendance: string;
+  reason?: string;
   timestamp: Date;
 } 
