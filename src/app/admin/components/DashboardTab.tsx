@@ -70,7 +70,6 @@ const DashboardTab: React.FC<DashboardTabProps> = ({
   handleLogout 
 }) => {
   const [totalTeachers, setTotalTeachers] = useState(0);
-  const [totalStudents, setTotalStudents] = useState(0);
   const [totalCourses, setTotalCourses] = useState(0);
   const [totalEvents, setTotalEvents] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,13 +81,7 @@ const DashboardTab: React.FC<DashboardTabProps> = ({
         const teachersSnapshot = await getDocs(collection(db, 'teachers'));
         setTotalTeachers(teachersSnapshot.size);
 
-        // Get total unique students (from attendance records)
-        const attendanceSnapshot = await getDocs(collection(db, 'attendance'));
-        const uniqueStudentIds = new Set();
-        attendanceSnapshot.forEach(doc => {
-          uniqueStudentIds.add(doc.data().studentId);
-        });
-        setTotalStudents(uniqueStudentIds.size);
+
 
         // Get total courses
         const coursesSnapshot = await getDocs(collection(db, 'courses'));
@@ -125,37 +118,29 @@ const DashboardTab: React.FC<DashboardTabProps> = ({
         transition={{ duration: 0.5 }}
       >
         <h2 className="text-4xl font-black mb-2 text-white tracking-tight">Dashboard Overview</h2>
-        <p className="text-gray-400 text-lg">Monitor your school's key metrics and activities</p>
       </motion.div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard 
-          icon={<FaUsers className="text-3xl" />} 
-          title="Students" 
-          value={totalStudents} 
-          bgClass="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800" 
-          delay={0.1} 
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatsCard 
           icon={<FaChalkboardTeacher className="text-3xl" />} 
           title="Teachers" 
           value={totalTeachers} 
           bgClass="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800" 
-          delay={0.2} 
+          delay={0.1} 
         />
         <StatsCard 
           icon={<FaBook className="text-3xl" />} 
           title="Courses" 
           value={totalCourses} 
           bgClass="bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800" 
-          delay={0.3} 
+          delay={0.2} 
         />
         <StatsCard 
           icon={<FaCalendarAlt className="text-3xl" />} 
           title="Events" 
           value={totalEvents} 
           bgClass="bg-gradient-to-br from-rose-600 via-rose-700 to-rose-800" 
-          delay={0.4} 
+          delay={0.3} 
         />
       </div>
       

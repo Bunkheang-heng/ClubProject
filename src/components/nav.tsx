@@ -56,26 +56,37 @@ const Navbar = () => {
     <motion.nav 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="bg-[#252526] text-gray-100 fixed w-full top-0 z-50 shadow-lg border-b border-gray-700"
+      className="fixed w-full top-0 z-50 backdrop-blur-xl bg-black/20 border-b border-cyan-500/30"
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      {/* Holographic glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-transparent to-green-500/10" />
+      
+      <div className="max-w-7xl mx-auto px-4 relative">
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+          <Link href="/" className="flex items-center space-x-3 group relative">
             <motion.div
-              whileHover={{ rotate: 360 }}
+              whileHover={{ 
+                rotate: 360,
+                scale: 1.1
+              }}
               transition={{ duration: 0.5 }}
+              className="relative"
             >
-              <FaCode className="h-8 w-8 text-green-400 group-hover:text-green-500 transition-colors" />
+              <div className="absolute inset-0 bg-cyan-400 rounded-full blur-lg opacity-50 group-hover:opacity-100 transition-opacity" />
+              <FaCode className="h-10 w-10 text-cyan-400 relative z-10" />
             </motion.div>
-            <motion.span 
-              className="font-bold text-xl text-green-400"
+            <motion.div
+              className="relative"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              &lt;ByteBuilder/&gt;
-            </motion.span>
+              <span className="font-black text-2xl bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+                BYTEBUILDER
+              </span>
+              <div className="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-green-400 transform scale-x-0 group-hover:scale-x-100 transition-transform" />
+            </motion.div>
           </Link>
 
           {/* Mobile menu button */}
@@ -94,7 +105,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex space-x-1">
+          <div className="hidden md:flex space-x-2">
             {navItems.map((item, index) => (
               <motion.div
                 key={item.href}
@@ -104,12 +115,21 @@ const Navbar = () => {
               >
                 <Link
                   href={item.href}
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-green-400 hover:bg-[#1E1E1E] transition-colors relative group"
+                  className="relative px-6 py-3 font-mono text-sm font-medium text-gray-300 hover:text-white transition-all duration-300 group overflow-hidden rounded-lg"
                 >
-                  {item.label}
+                  {/* Holographic background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Border glow */}
+                  <div className="absolute inset-0 border border-transparent group-hover:border-cyan-400/50 rounded-lg transition-all duration-300" />
+                  
+                  {/* Text */}
+                  <span className="relative z-10">{item.label}</span>
+                  
+                  {/* Animated underline */}
                   <motion.div
-                    className="absolute bottom-0 left-0 w-full h-0.5 bg-green-400 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
-                    initial={false}
+                    className="absolute bottom-1 left-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-green-400 group-hover:w-4/5 transition-all duration-300"
+                    style={{ transform: 'translateX(-50%)' }}
                   />
                 </Link>
               </motion.div>
@@ -121,18 +141,24 @@ const Navbar = () => {
         <motion.div
           initial={false}
           animate={{ height: isMenuOpen ? 'auto' : 0 }}
-          className="md:hidden overflow-hidden bg-[#1E1E1E]"
+          className="md:hidden overflow-hidden backdrop-blur-xl bg-black/40 border-t border-cyan-500/30"
         >
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navItems.map((item) => (
-              <Link
+          <div className="px-4 pt-4 pb-6 space-y-2">
+            {navItems.map((item, index) => (
+              <motion.div
                 key={item.href}
-                href={item.href}
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-green-400 hover:bg-[#252526] transition-colors"
-                onClick={() => setIsMenuOpen(false)}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: isMenuOpen ? 1 : 0, x: isMenuOpen ? 0 : -20 }}
+                transition={{ delay: index * 0.1 }}
               >
-                {item.label}
-              </Link>
+                <Link
+                  href={item.href}
+                  className="block px-4 py-3 rounded-lg text-base font-mono font-medium text-gray-300 hover:text-white hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-green-500/20 transition-all duration-300 border border-transparent hover:border-cyan-400/30"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
             ))}
           </div>
         </motion.div>

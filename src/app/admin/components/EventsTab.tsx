@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
-import { FaCalendarPlus, FaEdit, FaTrash, FaImage, FaCalendarAlt } from 'react-icons/fa';
+import { FaCalendarPlus, FaEdit, FaTrash, FaImage, FaCalendarAlt, FaTimes, FaClock, FaMapMarkerAlt, FaInfoCircle, FaFileImage } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -126,8 +126,41 @@ const EventsTab: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center h-96 space-y-6">
+        <motion.div
+          animate={{ 
+            rotate: 360,
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
+            scale: { duration: 1.5, repeat: Infinity }
+          }}
+          className="relative"
+        >
+          <div className="w-16 h-16 border-4 border-rose-500/30 border-t-rose-500 rounded-full"></div>
+          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-orange-500 rounded-full animate-spin"></div>
+        </motion.div>
+        
+        <motion.div
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-center"
+        >
+          <h3 className="text-xl font-semibold text-white mb-2">Loading Events</h3>
+          <p className="text-gray-400">Fetching your amazing events...</p>
+        </motion.div>
+        
+        <div className="flex gap-1">
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              className="w-2 h-2 bg-rose-500 rounded-full"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
+            />
+          ))}
+        </div>
       </div>
     );
   }
@@ -147,23 +180,55 @@ const EventsTab: React.FC = () => {
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h2 className="text-4xl font-black text-white tracking-tight mb-2">Event Management</h2>
-            <p className="text-gray-400 text-lg">Organize and manage your school events</p>
-            <div className="flex items-center gap-4 mt-4">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
+            <motion.h2 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl font-black text-white tracking-tight mb-2"
+            >
+              Event Management
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-gray-400 text-lg"
+            >
+              Organize and manage your school events
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex items-center gap-4 mt-4"
+            >
+              <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/50 px-3 py-2 rounded-full border border-gray-600/50">
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-2 h-2 bg-rose-400 rounded-full"
+                ></motion.div>
                 <span>{events.length} Total Events</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+              <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/50 px-3 py-2 rounded-full border border-gray-600/50">
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                  className="w-2 h-2 bg-emerald-400 rounded-full"
+                ></motion.div>
                 <span>{events.filter(event => new Date(event.date) >= new Date()).length} Upcoming</span>
               </div>
-            </div>
+            </motion.div>
           </div>
           
-          <div className="flex items-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex items-center"
+          >
             <AdminCreateEvent />
-          </div>
+          </motion.div>
         </div>
       </motion.div>
       
@@ -324,145 +389,191 @@ const EventsTab: React.FC = () => {
         )}
       </div>
       
-      {/* Edit Event Modal */}
+      {/* Enhanced Edit Event Modal */}
       {showEditModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 rounded-3xl max-w-lg w-full p-0 overflow-hidden shadow-2xl relative"
+            className="w-full max-w-4xl transform overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 text-left align-middle shadow-2xl transition-all relative"
           >
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full -translate-y-12 translate-x-12"></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-orange-500/10 rounded-full translate-y-10 -translate-x-10"></div>
+            {/* Background decorative elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full -translate-y-16 translate-x-16"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full translate-y-12 -translate-x-12"></div>
             
             {/* Close Button */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => setShowEditModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-red-400 text-2xl z-20 transition-colors duration-200"
-              aria-label="Close"
+              className="absolute top-6 right-6 z-10 p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-all duration-200"
             >
-              &times;
-            </button>
-            
-            <div className="relative z-10 p-6">
-              <div className="flex items-center gap-4 mb-6 border-b border-gray-600 pb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <FaEdit className="text-white text-lg" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white">Edit Event</h3>
-                  <p className="text-gray-400 text-sm">Update your event information</p>
-                </div>
-              </div>
-            <form onSubmit={handleEditEvent} className="space-y-4">
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-title">
-                  Event Title
-                </label>
-                <input
-                  id="edit-title"
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-date">
-                    Date
-                  </label>
-                  <input
-                    id="edit-date"
-                    type="date"
-                    className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-time">
-                    Time
-                  </label>
-                  <input
-                    id="edit-time"
-                    type="time"
-                    className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                    value={time}
-                    onChange={(e) => setTime(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-location">
-                  Location
-                </label>
-                <input
-                  id="edit-location"
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-description">
-                  Description
-                </label>
-                <textarea
-                  id="edit-description"
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 resize-none"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  required
-                ></textarea>
-              </div>
-              
-              <div>
-                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-image">
-                  Image URL (optional)
-                </label>
-                <input
-                  id="edit-image"
-                  type="text"
-                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-              
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-600">
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setShowEditModal(false)}
-                  className="px-6 py-3 bg-gray-600/50 hover:bg-gray-600 rounded-xl text-gray-300 transition-all duration-200 border border-gray-500 backdrop-blur-sm"
+              <FaTimes className="text-xl" />
+            </motion.button>
+
+            <div className="relative z-10 p-8">
+              {/* Header Section */}
+              <div className="text-center mb-8">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
                 >
-                  Cancel
-                </motion.button>
-                <motion.button
-                  type="submit"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="px-6 py-3 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
-                >
-                  <FaEdit className="text-sm" />
-                  Update Event
-                </motion.button>
+                  <FaEdit className="text-2xl text-white" />
+                </motion.div>
+                
+                <h3 className="text-3xl font-bold text-white mb-2">Edit Event</h3>
+                <p className="text-gray-400 text-lg">Update your event information</p>
               </div>
-            </form>
+
+              <form onSubmit={handleEditEvent} className="space-y-6">
+                {/* Event Title */}
+                <div className="space-y-2">
+                  <label htmlFor="edit-title" className="block text-sm font-semibold text-gray-300 mb-2">
+                    Event Title
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="edit-title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="w-full px-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg"
+                      placeholder="Enter an exciting event title..."
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Date and Time Row */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="edit-date" className="block text-sm font-semibold text-gray-300 mb-2">
+                      Event Date
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FaCalendarPlus className="text-gray-400 text-lg" />
+                      </div>
+                      <input
+                        type="date"
+                        id="edit-date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="edit-time" className="block text-sm font-semibold text-gray-300 mb-2">
+                      Event Time
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <FaClock className="text-gray-400 text-lg" />
+                      </div>
+                      <input
+                        type="time"
+                        id="edit-time"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="space-y-2">
+                  <label htmlFor="edit-location" className="block text-sm font-semibold text-gray-300 mb-2">
+                    Event Location
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <FaMapMarkerAlt className="text-gray-400 text-lg" />
+                    </div>
+                    <input
+                      type="text"
+                      id="edit-location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg"
+                      placeholder="Where will this event take place?"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <label htmlFor="edit-description" className="block text-sm font-semibold text-gray-300 mb-2">
+                    Event Description
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-4 left-4 pointer-events-none">
+                      <FaInfoCircle className="text-gray-400 text-lg" />
+                    </div>
+                    <textarea
+                      id="edit-description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={5}
+                      className="w-full pl-12 pr-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg resize-none"
+                      placeholder="Describe what makes this event special..."
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Image URL */}
+                <div className="space-y-2">
+                  <label htmlFor="edit-image" className="block text-sm font-semibold text-gray-300 mb-2">
+                    Event Image URL <span className="text-gray-500 font-normal">(optional)</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <FaFileImage className="text-gray-400 text-lg" />
+                    </div>
+                    <input
+                      type="url"
+                      id="edit-image"
+                      value={image}
+                      onChange={(e) => setImage(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 text-lg"
+                      placeholder="https://example.com/event-image.jpg"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">Leave empty to use a default placeholder image</p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-600">
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowEditModal(false)}
+                    className="px-8 py-3 bg-gray-600/50 hover:bg-gray-600 rounded-xl text-gray-300 font-medium transition-all duration-200 border border-gray-500"
+                  >
+                    Cancel
+                  </motion.button>
+                  
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="px-8 py-3 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white rounded-xl font-semibold shadow-lg transition-all duration-200 flex items-center gap-3"
+                  >
+                    <FaEdit className="text-lg" />
+                    Update Event
+                  </motion.button>
+                </div>
+              </form>
             </div>
           </motion.div>
         </div>

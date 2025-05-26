@@ -19,15 +19,48 @@ import AttendanceControl from '@/components/teacher/AttendanceControl';
 // Separate components for better code organization and rendering performance
 const TeacherProfile = memo(({ teacher }: { teacher: Teacher }) => (
   <motion.div 
-    className="bg-white p-6 rounded-xl shadow-md"
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3 }}
+    transition={{ duration: 0.5 }}
+    className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
   >
-    <h2 className="text-2xl font-bold text-primary mb-2">{teacher.name}</h2>
-    <p className="text-gray-600 mb-4">{teacher.email}</p>
-    <div className="inline-block px-3 py-1 bg-gradient-to-r from-primary to-primary-light text-white rounded-full text-sm">
-      {teacher.role || 'Teacher'}
+    {/* Background decoration */}
+    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
+    <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/10 rounded-full translate-y-12 -translate-x-12"></div>
+    
+    <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-6">
+      <div className="flex items-center gap-6">
+        {/* Avatar */}
+        <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <span className="text-white font-bold text-2xl">
+            {teacher.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+          </span>
+        </div>
+        
+        <div>
+          <h2 className="text-3xl font-black text-white tracking-tight mb-2">{teacher.name}</h2>
+          <p className="text-gray-400 text-lg mb-3">{teacher.email}</p>
+          <div className="flex items-center gap-2">
+            <span className={`px-4 py-2 text-sm font-semibold rounded-full ${
+              teacher.role === 'admin' 
+                ? 'bg-purple-600 text-white' 
+                : 'bg-blue-600 text-white'
+            } shadow-lg`}>
+              {teacher.role === 'admin' ? '👑 Admin' : '👨‍🏫 Teacher'}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="ml-auto">
+        <div className="text-center">
+          <p className="text-gray-400 text-sm uppercase tracking-wide">Status</p>
+          <div className="flex items-center gap-2 mt-1">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+            <span className="text-emerald-400 font-medium">Active</span>
+          </div>
+        </div>
+      </div>
     </div>
   </motion.div>
 ));
@@ -36,24 +69,78 @@ TeacherProfile.displayName = 'TeacherProfile';
 
 const CoursesList = memo(({ courses }: { courses: Course[] }) => (
   <motion.div 
-    className="bg-white p-6 rounded-xl shadow-md"
-    initial={{ opacity: 0, y: 10 }}
+    initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay: 0.1 }}
+    transition={{ duration: 0.5, delay: 0.1 }}
+    className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
   >
-    <h2 className="text-2xl font-bold text-primary mb-4">My Courses</h2>
-    {courses.length > 0 ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {courses.map(course => (
-          <div key={course.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-            <h3 className="font-bold text-lg text-primary-dark">{course.title}</h3>
-            <p className="text-gray-600 mt-2 text-sm">{course.description}</p>
-          </div>
-        ))}
+    {/* Background decoration */}
+    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full -translate-y-12 translate-x-12"></div>
+    <div className="absolute bottom-0 left-0 w-20 h-20 bg-blue-500/10 rounded-full translate-y-10 -translate-x-10"></div>
+    
+    <div className="relative z-10">
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+          <span className="text-white text-xl">📚</span>
+        </div>
+        <div>
+          <h2 className="text-3xl font-black text-white tracking-tight">My Courses</h2>
+          <p className="text-gray-400">Manage your assigned courses</p>
+        </div>
       </div>
-    ) : (
-      <p className="text-gray-500 text-center py-4">No courses assigned yet.</p>
-    )}
+      
+      {courses.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {courses.map((course, index) => (
+            <motion.div 
+              key={course.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.2 + index * 0.1 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              className="relative bg-gradient-to-br from-gray-700 to-gray-800 border border-gray-600 rounded-2xl p-6 hover:shadow-xl transition-all duration-300 overflow-hidden group"
+            >
+              {/* Card decoration */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-purple-500/10 to-transparent rounded-full -translate-y-8 translate-x-8"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <span className="text-white font-bold text-sm">
+                      {course.title.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-xl text-white group-hover:text-purple-300 transition-colors">
+                    {course.title}
+                  </h3>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed line-clamp-3" dangerouslySetInnerHTML={{ __html: course.description }} />
+                
+                <div className="mt-4 pt-4 border-t border-gray-600/50">
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                    <span>Active Course</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-center py-12"
+        >
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center">
+            <span className="text-gray-400 text-2xl">📚</span>
+          </div>
+          <h3 className="text-xl font-bold text-white mb-2">No Courses Assigned</h3>
+          <p className="text-gray-400">Contact your administrator to get courses assigned.</p>
+        </motion.div>
+      )}
+    </div>
   </motion.div>
 ));
 
@@ -191,133 +278,180 @@ const AttendanceManagement = memo(({
 
   return (
     <motion.div 
-      className="bg-white p-6 rounded-xl shadow-md"
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.2 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+      className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
     >
-      <h2 className="text-2xl font-bold text-primary mb-4">Attendance Records</h2>
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full -translate-y-12 translate-x-12"></div>
+      <div className="absolute bottom-0 left-0 w-20 h-20 bg-rose-500/10 rounded-full translate-y-10 -translate-x-10"></div>
       
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-4 items-end">
-          <div className="flex-grow">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Select Date
-            </label>
-            <select
-              value={selectedDate}
-              onChange={(e) => onDateChange(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
-            >
-              <option value="">-- Select a date --</option>
-              {dates.map(date => (
-                <option key={date} value={date}>
-                  {new Date(date).toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
-                </option>
-              ))}
-            </select>
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <span className="text-white text-xl">📊</span>
           </div>
-          
-          <div className="flex gap-2">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={exportAttendanceToExcel}
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center gap-2"
-              disabled={attendanceRecords.length === 0}
-            >
-              <FaFileExcel /> Export Excel
-            </motion.button>
-            
-            <button
-              onClick={onDeleteAttendance}
-              disabled={!selectedDate}
-              className="px-4 py-2 bg-red-500 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Delete Selected Date Records
-            </button>
+          <div>
+            <h2 className="text-3xl font-black text-white tracking-tight">Attendance Records</h2>
+            <p className="text-gray-400">View and manage student attendance</p>
           </div>
         </div>
-      </div>
       
-      {selectedDate ? (
-        Object.keys(recordsByClass).length > 0 ? (
-          <div className="space-y-6">
-            {Object.entries(recordsByClass).map(([classId, records]) => (
-              <div key={classId} className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-bold text-lg text-primary-dark mb-3">
-                  {classNames[classId] || 'Unknown Class'}
-                </h3>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Student Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Student ID
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                        {records.some(record => record.attendance === 'permission') && (
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Reason
+              <div className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-end">
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Select Date to View Records
+              </label>
+              <select
+                value={selectedDate}
+                onChange={(e) => onDateChange(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              >
+                <option value="">-- Select a date --</option>
+                {dates.map(date => (
+                  <option key={date} value={date}>
+                    {new Date(date).toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="flex gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={exportAttendanceToExcel}
+                className="px-4 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white rounded-xl flex items-center gap-2 font-medium shadow-lg transition-all duration-200"
+                disabled={attendanceRecords.length === 0}
+              >
+                <FaFileExcel className="text-sm" /> Export
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onDeleteAttendance}
+                disabled={!selectedDate}
+                className="px-4 py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                Delete Records
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      
+              {selectedDate ? (
+          Object.keys(recordsByClass).length > 0 ? (
+            <div className="space-y-6">
+              {Object.entries(recordsByClass).map(([classId, records]) => (
+                <motion.div 
+                  key={classId} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-gray-700/50 border border-gray-600 rounded-2xl p-6 backdrop-blur-sm"
+                >
+                  <h3 className="font-bold text-xl text-white mb-4 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white text-sm">📚</span>
+                    </div>
+                    {classNames[classId] || 'Unknown Class'}
+                  </h3>
+                  <div className="overflow-x-auto rounded-xl border border-gray-600">
+                    <table className="min-w-full divide-y divide-gray-600">
+                      <thead className="bg-gray-800">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                            Student Name
                           </th>
-                        )}
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {records.map(record => (
-                        <tr key={record.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{record.name}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-500">{record.studentId}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`px-2 py-1 text-xs rounded-full ${
-                              record.attendance === 'present' 
-                                ? 'bg-green-100 text-green-800' 
-                                : record.attendance === 'absent'
-                                  ? 'bg-red-100 text-red-800'
-                                  : record.attendance === 'permission'
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-blue-100 text-blue-800'
-                            }`}>
-                              {record.attendance}
-                            </span>
-                          </td>
+                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                            Student ID
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                            Status
+                          </th>
                           {records.some(record => record.attendance === 'permission') && (
-                            <td className="px-6 py-4 whitespace-normal">
-                              {record.attendance === 'permission' && record.reason ? (
-                                <div className="text-sm text-gray-500 max-w-xs">{record.reason}</div>
-                              ) : (
-                                <div className="text-sm text-gray-300">-</div>
-                              )}
-                            </td>
+                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                              Reason
+                            </th>
                           )}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="bg-gray-700/30 divide-y divide-gray-600">
+                        {records.map(record => (
+                          <tr key={record.id} className="hover:bg-gray-600/50 transition-colors">
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-white">{record.name}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-300">{record.studentId}</div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                                record.attendance === 'present' 
+                                  ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' 
+                                  : record.attendance === 'absent'
+                                    ? 'bg-red-600/20 text-red-400 border border-red-500/30'
+                                    : record.attendance === 'permission'
+                                      ? 'bg-yellow-600/20 text-yellow-400 border border-yellow-500/30'
+                                      : 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
+                              }`}>
+                                {record.attendance}
+                              </span>
+                            </td>
+                            {records.some(record => record.attendance === 'permission') && (
+                              <td className="px-6 py-4 whitespace-normal">
+                                {record.attendance === 'permission' && record.reason ? (
+                                  <div className="text-sm text-gray-300 max-w-xs">{record.reason}</div>
+                                ) : (
+                                  <div className="text-sm text-gray-500">-</div>
+                                )}
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-center py-12"
+            >
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center">
+                <span className="text-gray-400 text-2xl">📊</span>
               </div>
-            ))}
-          </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Records Found</h3>
+              <p className="text-gray-400">No attendance records found for the selected date.</p>
+            </motion.div>
+          )
         ) : (
-          <p className="text-gray-500 text-center py-4">No records found for the selected date.</p>
-        )
-      ) : (
-        <p className="text-gray-500 text-center py-4">Please select a date to view attendance records.</p>
-      )}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-center py-12"
+          >
+            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center">
+              <span className="text-white text-2xl">📅</span>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Select a Date</h3>
+            <p className="text-gray-400">Choose a date from the dropdown to view attendance records.</p>
+          </motion.div>
+        )}
+      </div>
     </motion.div>
   );
 });
@@ -485,21 +619,43 @@ const TeacherPage = () => {
 
   if (!teacher) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <Spinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-r from-gray-50 to-gray-100 min-h-screen flex flex-col">
+    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen flex flex-col">
       <Nav />
-      <ToastContainer limit={3} /> 
+      <ToastContainer 
+        limit={3}
+        position="top-right"
+        autoClose={3000}
+        theme="dark"
+        toastStyle={{
+          backgroundColor: '#374151',
+          color: '#fff'
+        }}
+      /> 
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="container mx-auto px-4 py-8 flex-grow"
+        className="container mx-auto px-4 py-8 flex-grow mt-16"
       >
+        {/* Header Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-12"
+        >
+          <div className="text-center">
+            <h1 className="text-5xl font-black text-white tracking-tight mb-3">Teacher Dashboard</h1>
+            <p className="text-gray-400 text-xl">Manage your courses and track student attendance</p>
+          </div>
+        </motion.div>
+
         <div className="max-w-6xl mx-auto">
           <motion.div 
             initial={{ y: 20, opacity: 0 }}
@@ -525,14 +681,14 @@ const TeacherPage = () => {
               onDateChange={setSelectedDate}
             />
             
-            <div className="text-center">
+            <div className="text-center mt-12">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleLogout}
-                className="bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white px-8 py-4 rounded-full font-bold text-lg shadow-xl flex items-center gap-2 mx-auto"
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-xl flex items-center gap-3 mx-auto border border-red-500/30"
               >
-                <FaSignOutAlt /> Sign Out
+                <FaSignOutAlt className="text-xl" /> Sign Out
               </motion.button>
             </div>
           </motion.div>

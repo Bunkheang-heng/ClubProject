@@ -10,8 +10,9 @@ import { toast } from 'react-toastify';
 import { formatFirebaseError } from '@/utils/errorHandling';
 import Spinner from '@/components/ui/Spinner';
 import * as XLSX from 'xlsx';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, getAuth } from 'firebase/auth';
 import { auth } from '@/firebase';
+import { initializeApp, getApps } from 'firebase/app';
 
 // Optimized TeacherCard with memoization
 const TeacherCard = memo(({ 
@@ -33,7 +34,8 @@ const TeacherCard = memo(({
     [courses, teacher.courses]
   );
 
-  const roleBadgeClass = teacher.role === 'admin' 
+  const isAdmin = teacher.specialRole === 'admin';
+  const roleBadgeClass = isAdmin 
     ? 'bg-purple-600 text-white' 
     : 'bg-blue-600 text-white';
 
@@ -94,7 +96,7 @@ const TeacherCard = memo(({
         {/* Role badge */}
         <div className="mb-4">
           <span className={`px-3 py-1 text-xs font-semibold rounded-full ${roleBadgeClass} shadow-lg`}>
-            {teacher.role === 'admin' ? '👑 Admin' : '👨‍🏫 Teacher'}
+            {isAdmin ? '👑 Admin' : '👨‍🏫 Teacher'}
           </span>
         </div>
         
@@ -159,6 +161,7 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'teacher' | 'admin'>('teacher');
+  const [specialRole, setSpecialRole] = useState<string>('');
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
   // Teacher creation state variables
@@ -167,6 +170,7 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
   const [newTeacherEmail, setNewTeacherEmail] = useState('');
   const [newTeacherPassword, setNewTeacherPassword] = useState('');
   const [newTeacherCourses, setNewTeacherCourses] = useState<string[]>([]);
+  const [newTeacherSpecialRole, setNewTeacherSpecialRole] = useState<string>('');
   const [isCreatingTeacher, setIsCreatingTeacher] = useState(false);
 
   // Add a debugging reference
@@ -186,13 +190,19 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
         
         // Then fetch teachers
         const teachersSnapshot = await getDocs(collection(db, 'teachers'));
-        const teachersData: Teacher[] = teachersSnapshot.docs.map(doc => ({
-          id: doc.id,
-          name: doc.data().name as string,
-          email: doc.data().email as string,
-          role: doc.data().role as string,
-          courses: doc.data().courses as string[] || []
-        }));
+        const teachersData: Teacher[] = teachersSnapshot.docs.map(doc => {
+          const data = doc.data();
+          const teacher = {
+            id: doc.id,
+            name: data.name as string,
+            email: data.email as string,
+            role: data.role as string,
+            courses: data.courses as string[] || [],
+            specialRole: data.specialRole // Include specialRole field
+          };
+          console.log('Fetched teacher:', teacher); // Debug log
+          return teacher;
+        });
         setTeachers(teachersData);
         
         setIsLoading(false);
@@ -211,6 +221,7 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
     setName(teacher.name);
     setEmail(teacher.email);
     setRole((teacher.role as 'teacher' | 'admin') || 'teacher');
+    setSpecialRole(teacher.specialRole || '');
     setSelectedCourses(teacher.courses || []);
     setShowEditModal(true);
   }, []);
@@ -234,33 +245,74 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
     try {
       setIsCreatingTeacher(true);
       
-      // Create the user in Firebase Auth
+      // Create a secondary Firebase app instance to avoid affecting current auth state
+      let secondaryApp;
+      const existingApps = getApps();
+      const secondaryAppName = 'secondary';
+      
+      // Check if secondary app already exists
+      const existingSecondaryApp = existingApps.find(app => app.name === secondaryAppName);
+      
+      if (existingSecondaryApp) {
+        secondaryApp = existingSecondaryApp;
+      } else {
+        // Get Firebase config from the main app
+        const firebaseConfig = {
+          apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+          authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+          storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+          messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+          appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
+        };
+        
+        secondaryApp = initializeApp(firebaseConfig, secondaryAppName);
+      }
+      
+      const secondaryAuth = getAuth(secondaryApp);
+      
+      // Create the user in Firebase Auth using secondary app
       const userCredential = await createUserWithEmailAndPassword(
-        auth, 
+        secondaryAuth, 
         newTeacherEmail, 
         newTeacherPassword
       );
       
       const userId = userCredential.user.uid;
       
+      // Sign out from secondary app immediately
+      await secondaryAuth.signOut();
+      
       // Save teacher data to Firestore
-      await setDoc(doc(db, 'teachers', userId), {
+      const teacherData: any = {
         name: newTeacherName,
         email: newTeacherEmail,
         role: 'teacher',
         courses: newTeacherCourses,
         createdAt: serverTimestamp(),
         createdBy: 'admin'
-      });
+      };
+      
+      // Add specialRole only if it's set to admin
+      if (newTeacherSpecialRole === 'admin') {
+        teacherData.specialRole = 'admin';
+      }
+      
+      await setDoc(doc(db, 'teachers', userId), teacherData);
       
       // Add the new teacher to the local state
-      const newTeacher = {
+      const newTeacher: any = {
         id: userId,
         name: newTeacherName,
         email: newTeacherEmail,
         role: 'teacher',
         courses: newTeacherCourses
       };
+      
+      // Add specialRole if it was set
+      if (newTeacherSpecialRole === 'admin') {
+        newTeacher.specialRole = 'admin';
+      }
       
       setTeachers([...teachers, newTeacher]);
       
@@ -269,6 +321,7 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
       setNewTeacherEmail('');
       setNewTeacherPassword('');
       setNewTeacherCourses([]);
+      setNewTeacherSpecialRole('');
       setShowCreateTeacherModal(false);
       
       toast.success("Teacher account created successfully!");
@@ -277,6 +330,75 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
       toast.error(formatFirebaseError(error) || "Failed to create teacher account");
     } finally {
       setIsCreatingTeacher(false);
+    }
+  };
+
+  const handleEditTeacher = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!selectedTeacher) return;
+    
+    // Only name is required for editing
+    if (!name.trim()) {
+      showError("Teacher name is required");
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      
+      // Update teacher data in Firestore
+      const teacherRef = doc(db, 'teachers', selectedTeacher.id);
+      const updateData: any = {
+        name: name.trim(),
+        role,
+        courses: selectedCourses
+      };
+      
+      // Only update email if it's different and not empty
+      if (email.trim() && email !== selectedTeacher.email) {
+        updateData.email = email.trim();
+      }
+      
+      // Handle specialRole - add if admin, remove if empty
+      if (specialRole === 'admin') {
+        updateData.specialRole = 'admin';
+      } else {
+        // Remove specialRole field if not admin
+        updateData.specialRole = null;
+      }
+      
+      await updateDoc(teacherRef, updateData);
+      
+      // Update the teacher in local state
+      setTeachers(prev => prev.map(teacher => 
+        teacher.id === selectedTeacher.id 
+          ? { 
+              ...teacher, 
+              name: name.trim(), 
+              email: email.trim() || teacher.email,
+              role,
+              specialRole: specialRole === 'admin' ? 'admin' : undefined,
+              courses: selectedCourses 
+            }
+          : teacher
+      ));
+      
+      showSuccess("Teacher updated successfully");
+      
+      // Reset form and close modal
+      setSelectedTeacher(null);
+      setName('');
+      setEmail('');
+      setRole('teacher');
+      setSpecialRole('');
+      setSelectedCourses([]);
+      setShowEditModal(false);
+    } catch (error) {
+      console.error("Error updating teacher:", error);
+      showError(`Failed to update teacher: ${(error as Error).message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -360,11 +482,11 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
                 <div className="flex items-center gap-4 mt-4">
                   <div className="flex items-center gap-2 text-sm text-gray-400">
                     <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                    <span>{teachers.filter(t => t.role === 'teacher').length} Teachers</span>
+                    <span>{teachers.filter(t => !t.specialRole || t.specialRole !== 'admin').length} Teachers</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-400">
                     <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>{teachers.filter(t => t.role === 'admin').length} Admins</span>
+                    <span>{teachers.filter(t => t.specialRole === 'admin').length} Admins</span>
                   </div>
                 </div>
               </div>
@@ -529,10 +651,10 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
               className="bg-gray-800 border border-gray-600 rounded-xl max-w-md w-full p-6"
             >
               <h3 className="text-xl font-bold mb-4 text-white">Edit Teacher</h3>
-              <form onSubmit={handleCreateTeacher}>
+              <form onSubmit={handleEditTeacher}>
                                   <div className="mb-4">
                     <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="edit-name">
-                      Name
+                      Name *
                     </label>
                     <input
                       id="edit-name"
@@ -545,7 +667,7 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
                   </div>
                   <div className="mb-4">
                     <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="edit-email">
-                      Email
+                      Email (optional)
                     </label>
                     <input
                       id="edit-email"
@@ -553,22 +675,24 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
                       className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      required
+                      placeholder="Leave empty to keep current email"
                     />
+                    <p className="mt-1 text-xs text-gray-400">Note: Password cannot be changed through this form for security reasons</p>
                   </div>
                   <div className="mb-4">
-                    <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="edit-role">
-                      Role
+                    <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="edit-special-role">
+                      Special Role (optional)
                     </label>
                     <select
-                      id="edit-role"
+                      id="edit-special-role"
                       className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value as 'teacher' | 'admin')}
+                      value={specialRole}
+                      onChange={(e) => setSpecialRole(e.target.value)}
                     >
-                      <option value="teacher">Teacher</option>
-                      <option value="admin">Admin</option>
+                      <option value="">Regular Teacher</option>
+                      <option value="admin">Admin Privileges</option>
                     </select>
+                    <p className="mt-1 text-xs text-gray-400">Grant admin privileges to allow access to admin dashboard</p>
                   </div>
                                   <div className="mb-4">
                     <label className="block text-gray-300 text-sm font-bold mb-2">
@@ -675,6 +799,21 @@ const TeachersTab = ({ teachers, courses, setTeachers, showSuccess, showError }:
                         minLength={6}
                         required
                       />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-300 font-medium mb-1">
+                        Special Role (optional)
+                      </label>
+                      <select
+                        value={newTeacherSpecialRole}
+                        onChange={(e) => setNewTeacherSpecialRole(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-600 bg-gray-700 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">Regular Teacher</option>
+                        <option value="admin">Admin Privileges</option>
+                      </select>
+                      <p className="mt-1 text-xs text-gray-400">Grant admin privileges to allow access to admin dashboard</p>
                     </div>
                     
                     <div>

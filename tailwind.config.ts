@@ -18,13 +18,19 @@ const config: Config = {
         },
         secondary: "var(--color-secondary)",
         accent: "var(--color-accent)",
+        purple: "var(--color-purple)",
+        orange: "var(--color-orange)",
         gray: {
           light: "var(--color-gray-light)",
           DEFAULT: "var(--color-gray)",
         }
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        mono: ['var(--font-fira-code)', 'Fira Code', 'monospace'],
+        orbitron: ['var(--font-orbitron)', 'Orbitron', 'sans-serif'],
+        inter: ['var(--font-inter)', 'Inter', 'sans-serif'],
+        'fira-code': ['var(--font-fira-code)', 'Fira Code', 'monospace'],
       },
       boxShadow: {
         'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',

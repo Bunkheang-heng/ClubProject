@@ -6,6 +6,7 @@ export interface Teacher {
   email: string;
   role: string;
   courses: string[];
+  specialRole?: string;
   createdAt?: string;
   updatedAt?: string;
 }

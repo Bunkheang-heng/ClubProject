@@ -134,115 +134,168 @@ const AttendanceControl: React.FC<AttendanceControlProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-8">
-      <h3 className="text-3xl font-bold mb-6 flex items-center text-primary">
-        <FaLockOpen className="mr-3" /> Attendance Control
-      </h3>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
+    >
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full -translate-y-12 translate-x-12"></div>
+      <div className="absolute bottom-0 left-0 w-20 h-20 bg-blue-500/10 rounded-full translate-y-10 -translate-x-10"></div>
       
-      <div className="mb-6">
-        <p className="text-gray-700 mb-4">
-          Open attendance for your courses to allow students to mark their attendance. 
-          When you're done collecting attendance, close the session.
-        </p>
-        
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-          <h4 className="font-semibold text-blue-800 mb-2 flex items-center">
-            <FaInfoCircle className="mr-2" /> How it works
-          </h4>
-          <p className="text-blue-700 text-sm">
-            When you open attendance for a course, students will see that course in the attendance form.
-            Once you close it, the course will no longer be available for students to select.
-          </p>
-        </div>
-        
-        {/* Open attendance section */}
-        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
-          <h4 className="text-lg font-semibold mb-4">Open Attendance Session</h4>
-          
-          <div className="flex flex-col sm:flex-row gap-4">
-            <select 
-              value={selectedCourse}
-              onChange={(e) => setSelectedCourse(e.target.value)}
-              className="flex-grow p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
-              disabled={availableCourses.length === 0 || actionLoading !== null}
-            >
-              <option value="">-- Select a course --</option>
-              {availableCourses.map(course => (
-                <option key={course.id} value={course.id}>
-                  {course.title}
-                </option>
-              ))}
-            </select>
-            
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={openAttendance}
-              disabled={!selectedCourse || actionLoading !== null}
-              className="bg-gradient-to-r from-green-500 to-green-600 text-white py-2 px-6 rounded-md flex items-center justify-center disabled:opacity-50"
-            >
-              {actionLoading === selectedCourse ? (
-                <Spinner size="sm" color="white" />
-              ) : (
-                <>
-                  <FaLockOpen className="mr-2" /> Open Attendance
-                </>
-              )}
-            </motion.button>
+      <div className="relative z-10">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <FaLockOpen className="text-white text-xl" />
+          </div>
+          <div>
+            <h3 className="text-3xl font-black text-white tracking-tight">Attendance Control</h3>
+            <p className="text-gray-400">Manage attendance sessions for your courses</p>
           </div>
         </div>
         
-        {/* Active sessions */}
-        <div>
-          <h4 className="text-lg font-semibold mb-4">Active Attendance Sessions</h4>
+        <div className="mb-6">
+          <p className="text-gray-300 mb-6 leading-relaxed">
+            Open attendance for your courses to allow students to mark their attendance. 
+            When you're done collecting attendance, close the session.
+          </p>
           
-          {loading ? (
-            <div className="flex justify-center py-8">
-              <Spinner size="lg" />
+          <div className="bg-blue-600/20 p-6 rounded-2xl border border-blue-500/30 mb-6 backdrop-blur-sm">
+            <h4 className="font-semibold text-blue-300 mb-3 flex items-center">
+              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                <FaInfoCircle className="text-white text-xs" />
+              </div>
+              How it works
+            </h4>
+            <p className="text-blue-200 text-sm leading-relaxed">
+              When you open attendance for a course, students will see that course in the attendance form.
+              Once you close it, the course will no longer be available for students to select.
+            </p>
+          </div>
+        
+          {/* Open attendance section */}
+          <div className="bg-gray-700/50 p-6 rounded-2xl border border-gray-600/50 mb-6">
+            <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center">
+                <span className="text-white text-sm">🎯</span>
+              </div>
+              Open Attendance Session
+            </h4>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <select 
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+                className="flex-grow px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                disabled={availableCourses.length === 0 || actionLoading !== null}
+              >
+                <option value="">-- Select a course --</option>
+                {availableCourses.map(course => (
+                  <option key={course.id} value={course.id}>
+                    {course.title}
+                  </option>
+                ))}
+              </select>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={openAttendance}
+                disabled={!selectedCourse || actionLoading !== null}
+                className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white py-3 px-6 rounded-xl flex items-center justify-center disabled:opacity-50 font-medium shadow-lg transition-all duration-200"
+              >
+                {actionLoading === selectedCourse ? (
+                  <Spinner size="sm" color="white" />
+                ) : (
+                  <>
+                    <FaLockOpen className="mr-2" /> Open Attendance
+                  </>
+                )}
+              </motion.button>
             </div>
-          ) : sessions.length === 0 ? (
-            <div className="bg-gray-100 rounded-lg p-8 text-center text-gray-500">
-              No active attendance sessions
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {sessions.map(session => {
-                const course = courses.find(c => c.id === session.courseId);
-                const courseName = course ? course.title : 'Unknown Course';
-                const openedTime = session.openedAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                return (
-                  <div key={session.id} className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex justify-between items-center">
-                    <div>
-                      <h5 className="font-semibold text-primary">{courseName}</h5>
-                      <p className="text-sm text-gray-500 flex items-center">
-                        <FaClock className="mr-1" /> Opened at {openedTime}
-                      </p>
-                    </div>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => closeAttendance(session.id)}
-                      disabled={actionLoading === session.id}
-                      className="bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-4 rounded-md flex items-center justify-center disabled:opacity-50"
+          </div>
+          
+          {/* Active sessions */}
+          <div>
+            <h4 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                <span className="text-white text-sm">🔥</span>
+              </div>
+              Active Attendance Sessions
+            </h4>
+            
+            {loading ? (
+              <div className="flex justify-center py-12">
+                <Spinner size="lg" />
+              </div>
+            ) : sessions.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-gray-700/30 rounded-2xl p-8 text-center border border-gray-600/30 border-dashed"
+              >
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl flex items-center justify-center">
+                  <span className="text-gray-400 text-2xl">⏰</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">No Active Sessions</h3>
+                <p className="text-gray-400">Open attendance for a course to begin tracking student attendance.</p>
+              </motion.div>
+            ) : (
+              <div className="space-y-4">
+                {sessions.map((session, index) => {
+                  const course = courses.find(c => c.id === session.courseId);
+                  const courseName = course ? course.title : 'Unknown Course';
+                  const openedTime = session.openedAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                  
+                  return (
+                    <motion.div 
+                      key={session.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className="bg-gradient-to-r from-gray-700 to-gray-800 p-6 rounded-2xl border border-gray-600 shadow-lg flex justify-between items-center hover:shadow-xl transition-all duration-300"
                     >
-                      {actionLoading === session.id ? (
-                        <Spinner size="sm" color="white" />
-                      ) : (
-                        <>
-                          <FaLock className="mr-2" /> Close
-                        </>
-                      )}
-                    </motion.button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                          <span className="text-white font-bold text-sm">
+                            {courseName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <h5 className="font-bold text-white text-lg">{courseName}</h5>
+                          <p className="text-gray-300 text-sm flex items-center gap-2">
+                            <FaClock className="text-emerald-400" /> 
+                            Opened at {openedTime}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => closeAttendance(session.id)}
+                        disabled={actionLoading === session.id}
+                        className="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white py-3 px-6 rounded-xl flex items-center justify-center disabled:opacity-50 font-medium shadow-lg transition-all duration-200"
+                      >
+                        {actionLoading === session.id ? (
+                          <Spinner size="sm" color="white" />
+                        ) : (
+                          <>
+                            <FaLock className="mr-2" /> Close Session
+                          </>
+                        )}
+                      </motion.button>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

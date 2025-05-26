@@ -3,12 +3,26 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { FaGithub, FaTwitter, FaLinkedin, FaCode, FaHeart } from 'react-icons/fa';
+import { FaGithub, FaTwitter, FaLinkedin, FaCode, FaHeart, FaTerminal, FaRocket } from 'react-icons/fa';
 
 const Footer = () => {
   return (
-    <footer className="bg-[#252526] text-gray-100 border-t border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 py-12">
+    <footer className="relative bg-gradient-to-br from-gray-900 via-black to-gray-900 text-gray-100 border-t border-cyan-500/30 overflow-hidden">
+      {/* Animated background grid */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,255,65,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,65,0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '30px 30px'
+        }} />
+      </div>
+      
+      {/* Holographic glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-green-500/5" />
+      
+      <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
