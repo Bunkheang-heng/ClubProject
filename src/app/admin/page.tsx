@@ -6,7 +6,6 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { auth, db } from '@/firebase';
 import Nav from '@/components/nav';
 import Footer from '@/components/footer';
@@ -135,7 +134,7 @@ const AdminPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800">
         <Spinner size="lg" />
       </div>
     );
@@ -143,13 +142,13 @@ const AdminPage = () => {
 
   if (authError) {
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-gray-50 to-gray-100 px-4">
-        <div className="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
-          <h2 className="text-2xl font-bold text-primary mb-4">Access Denied</h2>
-          <p className="text-gray-700 mb-6">{authError}</p>
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-gray-900 to-gray-800 px-4">
+        <div className="bg-gray-800 p-8 rounded-xl shadow-lg max-w-md w-full border border-gray-700">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Access Denied</h2>
+          <p className="text-gray-300 mb-6">{authError}</p>
           <button 
             onClick={() => router.push('/login')}
-            className="w-full bg-gradient-to-r from-primary to-primary-light text-white font-bold py-2 px-4 rounded-lg hover:from-primary-dark hover:to-primary transition-all duration-300"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-2 px-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300"
           >
             Back to Login
           </button>
@@ -187,25 +186,57 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-50 to-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col">
       <Nav />
-      <div className="container mx-auto px-4 py-8 flex-grow">
-        <h1 className="text-4xl font-bold text-primary mb-8">Admin Dashboard</h1>
+      <div className="container mx-auto px-4 py-8 flex-grow mt-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
+            <p className="text-gray-300">Manage your school's resources and settings</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center gap-2 border border-red-500"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm11 4a1 1 0 10-2 0v4a1 1 0 102 0V7zm-3 1a1 1 0 10-2 0v3a1 1 0 102 0V8zM8 9a1 1 0 00-2 0v3a1 1 0 102 0V9z" clipRule="evenodd" />
+            </svg>
+            Logout
+          </button>
+        </div>
         
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 mb-8 border border-gray-700">
           <AdminTabs 
             activeTab={activeTab} 
             setActiveTab={setActiveTab} 
           />
           
-          <Suspense fallback={<Spinner size="lg" />}>
-            {renderActiveTab()}
-          </Suspense>
+          <div className="mt-8">
+            <Suspense fallback={
+              <div className="flex justify-center items-center py-12">
+                <Spinner size="lg" />
+              </div>
+            }>
+              {renderActiveTab()}
+            </Suspense>
+          </div>
         </div>
       </div>
       <Footer />
       
-      <ToastContainer limit={3} />
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
     </div>
   );
 };

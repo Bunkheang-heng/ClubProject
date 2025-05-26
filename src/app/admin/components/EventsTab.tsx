@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
-import { FaCalendarPlus, FaEdit, FaTrash, FaImage } from 'react-icons/fa';
+import { FaCalendarPlus, FaEdit, FaTrash, FaImage, FaCalendarAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
@@ -133,170 +133,338 @@ const EventsTab: React.FC = () => {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-primary">Manage Events</h2>
-        <AdminCreateEvent />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {events.map(event => (
-          <motion.div 
-            key={event.id} 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
-          >
-            <div className="relative h-48 bg-gray-200">
-              {event.image ? (
-                <Image 
-                  src={event.image} 
-                  alt={event.title} 
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="w-full"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full">
-                  <FaImage className="text-4xl text-gray-400" />
-                </div>
-              )}
+    <div className="space-y-8">
+      {/* Header Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
+      >
+        {/* Background decoration */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full translate-y-12 -translate-x-12"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h2 className="text-4xl font-black text-white tracking-tight mb-2">Event Management</h2>
+            <p className="text-gray-400 text-lg">Organize and manage your school events</p>
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
+                <span>{events.length} Total Events</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                <span>{events.filter(event => new Date(event.date) >= new Date()).length} Upcoming</span>
+              </div>
             </div>
-            <div className="p-6">
-              <h3 className="text-xl font-semibold mb-2 text-gray-800">{event.title}</h3>
-              <div className="text-sm text-gray-600 mb-1">Date: {event.date}</div>
-              <div className="text-sm text-gray-600 mb-1">Time: {event.time}</div>
-              <div className="text-sm text-gray-600 mb-4">Location: {event.location}</div>
-              <p className="text-gray-600 mb-4 line-clamp-3">{event.description}</p>
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => openEditModal(event)}
-                  className="text-primary hover:text-primary-dark p-2"
+          </div>
+          
+          <div className="flex items-center">
+            <AdminCreateEvent />
+          </div>
+        </div>
+      </motion.div>
+      
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events.map((event, index) => {
+          const isUpcoming = new Date(event.date) >= new Date();
+          
+          return (
+            <motion.div 
+              key={event.id} 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 rounded-2xl hover:shadow-2xl hover:border-gray-500 transition-all duration-500 overflow-hidden group"
+            >
+              {/* Background gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              {/* Decorative element */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-rose-500/10 to-transparent rounded-full -translate-y-10 translate-x-10"></div>
+              
+              <div className="relative z-10">
+                {/* Event Image */}
+                <div className="relative h-48 overflow-hidden rounded-t-2xl">
+                  {event.image ? (
+                    <>
+                      <Image 
+                        src={event.image} 
+                        alt={event.title} 
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-rose-600/20 to-orange-600/20 flex items-center justify-center">
+                      <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <FaCalendarAlt className="text-2xl text-white" />
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Event status badge */}
+                  <div className="absolute top-4 left-4">
+                    <span className={`px-3 py-1 backdrop-blur-sm text-white text-xs font-semibold rounded-full ${
+                      isUpcoming 
+                        ? 'bg-emerald-600/90' 
+                        : 'bg-gray-600/90'
+                    }`}>
+                      {isUpcoming ? '📅 Upcoming' : '📋 Past Event'}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  {/* Event Title */}
+                  <h3 className="text-xl font-bold mb-3 text-white line-clamp-2 group-hover:text-rose-300 transition-colors duration-300">
+                    {event.title}
+                  </h3>
+                  
+                  {/* Event Details */}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg border border-gray-600/50">
+                      <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">📅</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-gray-400 uppercase tracking-wide">Date</span>
+                        <p className="text-white font-medium text-sm">{event.date}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg border border-gray-600/50">
+                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">🕐</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-gray-400 uppercase tracking-wide">Time</span>
+                        <p className="text-white font-medium text-sm">{event.time}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-2 bg-gray-800/50 rounded-lg border border-gray-600/50">
+                      <div className="w-6 h-6 bg-gradient-to-br from-rose-500 to-orange-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs">📍</span>
+                      </div>
+                      <div>
+                        <span className="text-xs text-gray-400 uppercase tracking-wide">Location</span>
+                        <p className="text-white font-medium text-sm">{event.location}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Event Description */}
+                  <p className="text-gray-300 mb-4 line-clamp-2 text-sm leading-relaxed">{event.description}</p>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-4 border-t border-gray-600/50">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => openEditModal(event)}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm border border-blue-600/30"
+                    >
+                      <FaEdit className="text-xs" />
+                      Edit
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleDeleteEvent(event.id)}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm border border-red-600/30"
+                    >
+                      <FaTrash className="text-xs" />
+                      Delete
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+        
+        {/* Empty State */}
+        {events.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="col-span-full text-center py-16"
+          >
+            <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-12 border border-gray-600 max-w-md mx-auto relative overflow-hidden">
+              {/* Background decoration */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full -translate-y-12 translate-x-12"></div>
+              <div className="absolute bottom-0 left-0 w-20 h-20 bg-orange-500/10 rounded-full translate-y-10 -translate-x-10"></div>
+              
+              <div className="relative z-10">
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
                 >
-                  <FaEdit />
-                </button>
-                <button
-                  onClick={() => handleDeleteEvent(event.id)}
-                  className="text-red-600 hover:text-red-800 p-2"
-                >
-                  <FaTrash />
-                </button>
+                  <FaCalendarAlt className="text-3xl text-white" />
+                </motion.div>
+                
+                <h3 className="text-2xl font-bold text-white mb-3">No Events Yet</h3>
+                <p className="text-gray-400 mb-8 leading-relaxed">Start organizing your school calendar by creating your first event.</p>
+                
+                <div className="text-center">
+                  <AdminCreateEvent />
+                </div>
               </div>
             </div>
           </motion.div>
-        ))}
-        
-        {events.length === 0 && (
-          <div className="col-span-full py-8 text-center text-gray-500">
-            <p className="mb-4">No events found. Click the "Add Event" button to create your first event.</p>
-            <FaCalendarPlus className="text-4xl mx-auto text-gray-400" />
-          </div>
         )}
       </div>
       
       {/* Edit Event Modal */}
       {showEditModal && selectedEvent && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-lg w-full p-6">
-            <h3 className="text-xl font-bold mb-4 text-primary">Edit Event</h3>
-            <form onSubmit={handleEditEvent}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-title">
-                  Title
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 rounded-3xl max-w-lg w-full p-0 overflow-hidden shadow-2xl relative"
+          >
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full -translate-y-12 translate-x-12"></div>
+            <div className="absolute bottom-0 left-0 w-20 h-20 bg-orange-500/10 rounded-full translate-y-10 -translate-x-10"></div>
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setShowEditModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-red-400 text-2xl z-20 transition-colors duration-200"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            
+            <div className="relative z-10 p-6">
+              <div className="flex items-center gap-4 mb-6 border-b border-gray-600 pb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                  <FaEdit className="text-white text-lg" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Edit Event</h3>
+                  <p className="text-gray-400 text-sm">Update your event information</p>
+                </div>
+              </div>
+            <form onSubmit={handleEditEvent} className="space-y-4">
+              <div>
+                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-title">
+                  Event Title
                 </label>
                 <input
                   id="edit-title"
                   type="text"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-date">
+                  <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-date">
                     Date
                   </label>
                   <input
                     id="edit-date"
                     type="date"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-time">
+                  <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-time">
                     Time
                   </label>
                   <input
                     id="edit-time"
                     type="time"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     required
                   />
                 </div>
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-location">
+              
+              <div>
+                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-location">
                   Location
                 </label>
                 <input
                   id="edit-location"
                   type="text"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-description">
+              
+              <div>
+                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-description">
                   Description
                 </label>
                 <textarea
                   id="edit-description"
                   rows={3}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 resize-none"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   required
                 ></textarea>
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="edit-image">
+              
+              <div>
+                <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="edit-image">
                   Image URL (optional)
                 </label>
                 <input
                   id="edit-image"
                   type="text"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full px-4 py-3 border border-gray-600 bg-gray-700 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
-              <div className="flex items-center justify-end gap-2">
-                <button
+              
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-600">
+                <motion.button
                   type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                  className="px-6 py-3 bg-gray-600/50 hover:bg-gray-600 rounded-xl text-gray-300 transition-all duration-200 border border-gray-500 backdrop-blur-sm"
                 >
                   Cancel
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary text-white rounded-lg"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="px-6 py-3 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white rounded-xl font-medium shadow-lg transition-all duration-200 flex items-center gap-2"
                 >
+                  <FaEdit className="text-sm" />
                   Update Event
-                </button>
+                </motion.button>
               </div>
             </form>
-          </div>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

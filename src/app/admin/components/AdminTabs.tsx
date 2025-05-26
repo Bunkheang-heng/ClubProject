@@ -26,8 +26,8 @@ const TabButton = memo(({ id, label, icon, active, onClick }: TabButtonProps) =>
       onClick={handleClick}
       className={`flex items-center gap-3 px-6 py-4 rounded-xl transition-all duration-300 ${
         active 
-          ? 'bg-gradient-to-r from-primary to-primary-light text-white shadow-lg' 
-          : 'bg-white text-gray-700 hover:bg-gray-light border border-gray-200'
+          ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg' 
+          : 'bg-gray-700 text-gray-300 hover:bg-gray-600 border border-gray-600'
       }`}
       aria-pressed={active}
       role="tab"

@@ -14,30 +14,6 @@
   }
 }
 
-/* Additional custom styles */
-.text-gradient {
-  @apply bg-gradient-to-r from-primary to-primary-light bg-clip-text text-transparent;
-}
-
-.btn-primary {
-  @apply bg-gradient-to-r from-primary to-primary-light hover:from-primary-dark hover:to-primary 
-    text-white font-bold py-2 px-6 rounded-full shadow-lg transform transition-all duration-300
-    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
-}
-
-.card {
-  @apply bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden;
-}
-
-.input-field {
-  @apply mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm 
-    focus:outline-none focus:ring-primary focus:border-primary;
-}
-
-.admin-heading {
-  @apply text-2xl font-bold mb-6 text-primary;
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #1A1A1A;
