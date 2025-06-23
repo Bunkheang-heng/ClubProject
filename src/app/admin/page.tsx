@@ -15,16 +15,28 @@ import { Teacher, Course, AdminTab } from './types';
 
 // Lazy load heavy components
 const DashboardTab = dynamic(() => import('./components/DashboardTab'), { 
-  loading: () => <Spinner size="lg" /> 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
 });
 const TeachersTab = dynamic(() => import('./components/TeachersTab'), { 
-  loading: () => <Spinner size="lg" /> 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
 });
 const CoursesTab = dynamic(() => import('./components/CoursesTab'), { 
-  loading: () => <Spinner size="lg" /> 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
 });
 const EventsTab = dynamic(() => import('./components/EventsTab'), { 
-  loading: () => <Spinner size="lg" /> 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
+});
+const ChallengesTab = dynamic(() => import('./components/ChallengesTab'), { 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
+});
+const SettingsTab = dynamic(() => import('./components/SettingsTab'), { 
+  loading: () => <Spinner size="lg" />,
+  ssr: false
 });
 
 const AdminPage = () => {
@@ -180,6 +192,16 @@ const AdminPage = () => {
         />;
       case 'events':
         return <EventsTab />;
+      case 'challenges':
+        return <ChallengesTab 
+          showSuccess={showSuccess}
+          showError={showError}
+        />;
+      case 'settings':
+        return <SettingsTab 
+          showSuccess={showSuccess}
+          showError={showError}
+        />;
       default:
         return null;
     }

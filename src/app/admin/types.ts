@@ -1,4 +1,4 @@
-export type AdminTab = 'dashboard' | 'teachers' | 'courses' | 'events';
+export type AdminTab = 'dashboard' | 'teachers' | 'courses' | 'events' | 'challenges' | 'settings';
 
 export interface Teacher {
   id: string;
@@ -46,6 +46,29 @@ export interface AttendanceRecord {
   courseId: string;
   date: string;
   status: 'present' | 'absent' | 'late';
+}
+
+export interface Challenge {
+  id?: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  description: string;
+  example: string;
+  constraints: string[];
+  points: number;
+  timeLimit: number; // in minutes
+  functionName: string;
+  testCases: Array<{input: any, expected: any}>;
+  createdAt?: any;
+  createdBy?: string;
+  maxAttempts?: number; // Optional: if set, limits attempts for this challenge
+}
+
+export interface AppSettings {
+  id?: string;
+  challengesEnabled: boolean;
+  lastUpdated?: any;
+  updatedBy?: string;
 }
 
 // Type guards for runtime validation

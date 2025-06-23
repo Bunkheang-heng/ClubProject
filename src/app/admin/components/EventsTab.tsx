@@ -4,7 +4,6 @@ import { collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firesto
 import { db } from '@/firebase';
 import { FaCalendarPlus, FaEdit, FaTrash, FaImage, FaCalendarAlt, FaTimes, FaClock, FaMapMarkerAlt, FaInfoCircle, FaFileImage } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 import AdminCreateEvent from '@/components/uploadEvent';
 
@@ -127,37 +126,20 @@ const EventsTab: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-6">
-        <motion.div
-          animate={{ 
-            rotate: 360,
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ 
-            rotate: { duration: 2, repeat: Infinity, ease: "linear" },
-            scale: { duration: 1.5, repeat: Infinity }
-          }}
-          className="relative"
-        >
-          <div className="w-16 h-16 border-4 border-rose-500/30 border-t-rose-500 rounded-full"></div>
-          <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-orange-500 rounded-full animate-spin"></div>
-        </motion.div>
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-rose-500/30 border-t-rose-500 rounded-full animate-spin"></div>
+        </div>
         
-        <motion.div
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="text-center"
-        >
+        <div className="text-center">
           <h3 className="text-xl font-semibold text-white mb-2">Loading Events</h3>
           <p className="text-gray-400">Fetching your amazing events...</p>
-        </motion.div>
+        </div>
         
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
-            <motion.div
+            <div
               key={i}
               className="w-2 h-2 bg-rose-500 rounded-full"
-              animate={{ opacity: [0.3, 1, 0.3] }}
-              transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
             />
           ))}
         </div>
@@ -168,69 +150,36 @@ const EventsTab: React.FC = () => {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden"
-      >
+      <div className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-8 border border-gray-600 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full -translate-y-16 translate-x-16"></div>
         <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full translate-y-12 -translate-x-12"></div>
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <motion.h2 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-4xl font-black text-white tracking-tight mb-2"
-            >
+            <h2 className="text-4xl font-black text-white tracking-tight mb-2">
               Event Management
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-400 text-lg"
-            >
+            </h2>
+            <p className="text-gray-400 text-lg">
               Organize and manage your school events
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex items-center gap-4 mt-4"
-            >
+            </p>
+            <div className="flex items-center gap-4 mt-4">
               <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/50 px-3 py-2 rounded-full border border-gray-600/50">
-                <motion.div 
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 bg-rose-400 rounded-full"
-                ></motion.div>
+                <div className="w-2 h-2 bg-rose-400 rounded-full"></div>
                 <span>{events.length} Total Events</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-800/50 px-3 py-2 rounded-full border border-gray-600/50">
-                <motion.div 
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                  className="w-2 h-2 bg-emerald-400 rounded-full"
-                ></motion.div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                 <span>{events.filter(event => new Date(event.date) >= new Date()).length} Upcoming</span>
               </div>
-            </motion.div>
+            </div>
           </div>
           
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex items-center"
-          >
+          <div className="flex items-center">
             <AdminCreateEvent />
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
       
       {/* Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -238,12 +187,8 @@ const EventsTab: React.FC = () => {
           const isUpcoming = new Date(event.date) >= new Date();
           
           return (
-            <motion.div 
+            <div 
               key={event.id} 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
               className="relative bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 rounded-2xl hover:shadow-2xl hover:border-gray-500 transition-all duration-500 overflow-hidden group"
             >
               {/* Background gradient overlay */}
@@ -330,52 +275,39 @@ const EventsTab: React.FC = () => {
                   
                   {/* Action Buttons */}
                   <div className="flex gap-3 pt-4 border-t border-gray-600/50">
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <button
                       onClick={() => openEditModal(event)}
                       className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm border border-blue-600/30"
                     >
                       <FaEdit className="text-xs" />
                       Edit
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    </button>
+                    <button
                       onClick={() => handleDeleteEvent(event.id)}
                       className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl transition-all duration-200 text-sm font-medium backdrop-blur-sm border border-red-600/30"
                     >
                       <FaTrash className="text-xs" />
                       Delete
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
         
         {/* Empty State */}
         {events.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="col-span-full text-center py-16"
-          >
+          <div className="col-span-full text-center py-16">
             <div className="bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 rounded-3xl p-12 border border-gray-600 max-w-md mx-auto relative overflow-hidden">
               {/* Background decoration */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-rose-500/10 rounded-full -translate-y-12 translate-x-12"></div>
               <div className="absolute bottom-0 left-0 w-20 h-20 bg-orange-500/10 rounded-full translate-y-10 -translate-x-10"></div>
               
               <div className="relative z-10">
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
-                >
+                <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <FaCalendarAlt className="text-3xl text-white" />
-                </motion.div>
+                </div>
                 
                 <h3 className="text-2xl font-bold text-white mb-3">No Events Yet</h3>
                 <p className="text-gray-400 mb-8 leading-relaxed">Start organizing your school calendar by creating your first event.</p>
@@ -385,44 +317,32 @@ const EventsTab: React.FC = () => {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
       
       {/* Enhanced Edit Event Modal */}
       {showEditModal && selectedEvent && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-            className="w-full max-w-4xl transform overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 text-left align-middle shadow-2xl transition-all relative"
-          >
+          <div className="w-full max-w-4xl transform overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800 via-gray-700 to-gray-800 border border-gray-600 text-left align-middle shadow-2xl transition-all relative">
             {/* Background decorative elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-orange-500/10 rounded-full translate-y-12 -translate-x-12"></div>
             
             {/* Close Button */}
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
+            <button
               onClick={() => setShowEditModal(false)}
               className="absolute top-6 right-6 z-10 p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-all duration-200"
             >
               <FaTimes className="text-xl" />
-            </motion.button>
+            </button>
 
             <div className="relative z-10 p-8">
               {/* Header Section */}
               <div className="text-center mb-8">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                  className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg"
-                >
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-rose-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
                   <FaEdit className="text-2xl text-white" />
-                </motion.div>
+                </div>
                 
                 <h3 className="text-3xl font-bold text-white mb-2">Edit Event</h3>
                 <p className="text-gray-400 text-lg">Update your event information</p>
@@ -553,29 +473,25 @@ const EventsTab: React.FC = () => {
 
                 {/* Action Buttons */}
                 <div className="flex items-center justify-end gap-4 pt-6 border-t border-gray-600">
-                  <motion.button
+                  <button
                     type="button"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     onClick={() => setShowEditModal(false)}
                     className="px-8 py-3 bg-gray-600/50 hover:bg-gray-600 rounded-xl text-gray-300 font-medium transition-all duration-200 border border-gray-500"
                   >
                     Cancel
-                  </motion.button>
+                  </button>
                   
-                  <motion.button
+                  <button
                     type="submit"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                     className="px-8 py-3 bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-700 hover:to-orange-700 text-white rounded-xl font-semibold shadow-lg transition-all duration-200 flex items-center gap-3"
                   >
                     <FaEdit className="text-lg" />
                     Update Event
-                  </motion.button>
+                  </button>
                 </div>
               </form>
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,6 @@
 'use client'
 import React, { memo, useCallback } from 'react';
-import { FaHome, FaChalkboardTeacher, FaBook, FaCalendarAlt } from 'react-icons/fa';
+import { FaHome, FaChalkboardTeacher, FaBook, FaCalendarAlt, FaCode, FaCog } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { AdminTab } from '../types';
 
@@ -53,7 +53,9 @@ const tabs: Array<{id: AdminTab; label: string; icon: JSX.Element}> = [
   { id: 'dashboard', label: 'Dashboard', icon: <FaHome className="text-xl" /> },
   { id: 'teachers', label: 'Teachers', icon: <FaChalkboardTeacher className="text-xl" /> },
   { id: 'courses', label: 'Courses', icon: <FaBook className="text-xl" /> },
-  { id: 'events', label: 'Events', icon: <FaCalendarAlt className="text-xl" /> }
+  { id: 'events', label: 'Events', icon: <FaCalendarAlt className="text-xl" /> },
+  { id: 'challenges', label: 'Challenges', icon: <FaCode className="text-xl" /> },
+  { id: 'settings', label: 'Settings', icon: <FaCog className="text-xl" /> }
 ];
 
 const AdminTabs: React.FC<AdminTabsProps> = ({ activeTab, setActiveTab }) => {
